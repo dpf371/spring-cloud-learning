@@ -1,0 +1,35 @@
+server:
+  port: 9999
+
+feign:
+  httpclient:
+    enabled: true
+  client:
+    config:
+      default:
+        readTimeout: 600000
+
+url:
+  pfdu:
+    name: pfdu
+    url: https://pfdu.com
+  tax:
+    name: bing
+    url: https://tax.com:1443
+  12306:
+    url: https://www.12306.cn/index
+
+logging:
+  level:
+    com.example.proxy: debug
+
+spring:
+  application:
+    name: openfeign-httpclient-ssl
+  cloud:
+    consul:
+      discovery:
+        prefer-ip-address: true
+        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+        heartbeat:
+          enabled: true
