@@ -1,0 +1,44 @@
+server:
+  compression:
+    enabled: true
+    ## Response Body 达到 1KB Tomcat就压缩
+    min-response-size: 1
+    mime-types: "text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json,application/xml,image/png,image/jpg"
+  tomcat:
+    ## Response Body <= 400MB
+    max-swallow-size: 400MB
+  max-http-header-size: 2MB
+  port: 8888
+
+feign:
+  compression:
+    response:
+      ## 开启压缩，该开关有2个作用：一是开启Apache Httpclient 给请求头添加压缩响应的请求标识（有bug导致启用压缩功能不生效），二是开启Apache Httpclient的解压功能。
+      enabled: true
+  httpclient:
+    ## Apache httpclient 会自动解压 Response Body
+    ## 关闭时，客户端收到的消息是 乱码，开启时，客户端则能解压 Response Body，没有乱码。
+    enabled: false
+  client:
+    config:
+      default:
+        readTimeout: 600000
+
+test:
+  name: test
+  url: http://localhost:8888/mock
+
+logging:
+  level:
+    com.example.proxy: debug
+
+spring:
+  application:
+    name: openfeign-httpclient-compression
+  cloud:
+    consul:
+      discovery:
+        prefer-ip-address: true
+        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+        heartbeat:
+          enabled: true
